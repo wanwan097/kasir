@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kasir Premium Toko</title>
+    <link rel="stylesheet" href="POS.css">
+</head>
+<body>
+
+    <div class="aura-bg-1"></div>
+    <div class="aura-bg-2"></div>
+
+    <div class="kasir-container">
+        <h1 class="judul-aplikasi">🏪 NAMA TOKOH</h1>
+
+        <div class="konten-utama">
+            <div class="blok-menu">
+
+                
+                                       <div class="blok-menu">
+                <h2 class="sub-judul">Daftar Menu</h2>
+                
+                <div class="form-tambah-produk" style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px dashed rgba(255,255,255,0.1);">
+                    <p style="font-size: 13px; font-weight: 600; color: #a855f7; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">➕ Tambah Produk Baru ke Etalase</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="input-nama-baru" placeholder="Nama Produk Baru...">
+                        <input type="number" id="input-harga-baru" placeholder="Harga (Contoh: 15000)...">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+                        <button onclick="tambahProdukKeEtalase()" style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: white; border: none; padding: 11px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);">
+                            Simpan Produk Baru
+                        </button>
+                        <button onclick="saklarModeEdit()" id="btn-saklar-edit" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                            ⚙️ Mode Edit
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-grup" style="margin-bottom: 15px;">
+                    <input type="text" id="cari-produk" onkeyup="filterMenu()" placeholder="🔍 Cari nama rokok, jajanan, atau produk...">
+                </div>
+
+                <div class="grid-menu" id="wadah-menu">
+                    <button onclick="tambahKeKeranjang('Nasi Goreng', 15000)" class="tombol-menu">
+                        <p class="nama-produk">Nasi Goreng</p>
+                        <p class="harga-produk">Rp 15.000</p>
+                    </button>
+                    <button onclick="tambahKeKeranjang('Mie Goreng', 12000)" class="tombol-menu">
+                        <p class="nama-produk">Mie Goreng</p>
+                        <p class="harga-produk">Rp 12.000</p>
+                    </button>
+                    <button onclick="tambahKeKeranjang('Ayam Goreng', 18000)" class="tombol-menu">
+                        <p class="nama-produk">Ayam Goreng</p>
+                        <p class="harga-produk">Rp 18.000</p>
+                    </button>
+                    <button onclick="tambahKeKeranjang('Es Teh Manis', 5000)" class="tombol-menu">
+                        <p class="nama-produk">Es Teh Manis</p>
+                        <p class="harga-produk">Rp 5.000</p>
+                    </button>
+                </div>
+            </div>
+
+            <div class="blok-keranjang">
+                <h2 class="sub-judul">Keranjang Pesanan</h2>
+                
+                <ul id="daftar-pesanan" class="list-pesanan">
+                    <li class="pesanan-kosong" id="pesanan-kosong">Belum ada pesanan</li>
+                </ul>
+
+                <div class="info-total">
+                    <span>Total:</span>
+                    <span id="total-harga">Rp 0</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <button type="button" id="btn-metode-tunai" onclick="pilihMetodeBayar('TUNAI')" style="padding: 10px; background: #2563eb; color: #fff; border: 1px solid #2563eb; border-radius: 8px; font-weight: bold; cursor: pointer;">💵 Tunai</button>
+                    <button type="button" id="btn-metode-qris" onclick="pilihMetodeBayar('QRIS')" style="padding: 10px; background: rgba(255,255,255,0.05); color: #9ca3af; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-weight: bold; cursor: pointer;">📱 QRIS</button>
+                </div>
+
+                                <div class="form-bayar">
+                    <div class="input-grup" id="grup-input-tunai">
+                        <label for="uang-dibayar">Uang Dibayar</label>
+                        <input type="text" id="uang-dibayar" oninput="formatRupiahInput(this)" placeholder="Masukkan nominal...">
+                    </div>
+                    
+                    <div class="info-kembalian">
+                        <span id="label-kembalian">Kembalian:</span>
+                        <span id="uang-kembalian">Rp 0</span>
+                    </div>
+                    
+                    <button onclick="prosesPembayaran()" class="tombol-bayar">
+                        ✅ Selesaikan Transaksi
+                    </button>
+
+                    <button onclick="resetKasir()" class="tombol-reset">
+                        Reset Pesanan
+                    </button>
+                </div>
+            </div>
+
+
+        <div id="area-nota" class="area-nota" style="display: none;"></div>
+        
+        <button id="tombol-print-fisik" onclick="cetakKePrinterFisik()" class="tombol-print-real" style="display: none;">
+            🖨️ Cetak ke Kertas Kasir (Printer Thermal)
+        </button>
+    </div>
+
+    <script src="POS.js"></script>
+    
+        <div id="modal-qris-jumbo" class="modal-overlay" style="display: none;">
+        <div class="modal-konten">
+            <div class="aura-glow-qris"></div>
+            <p class="modal-judul-qris">📱 SCAN QRIS PEMBAYARAN</p>
+            
+            <img src="qris.jpg" alt="QRIS TOKO LARGE" class="gambar-qris-besar">
+            
+            <p id="modal-total-tagihan" style="font-size: 18px; font-weight: 800; color: #34d399; margin: 15px 0 5px 0; text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);">Total: Rp 0</p>
+            <p style="color: #9ca3af; font-size: 11px; margin-bottom: 20px;">*Silakan scan menggunakan e-wallet atau m-banking</p>
+            
+            <button onclick="tutupModalQris()" class="tombol-tutup-qris">
+                ✅ Pembayaran Selesai
+            </button>
+        </div>
+    </div>
+
+    
+</body>
+</html>
